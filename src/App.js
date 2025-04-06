@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import './App.css';
 import { HashRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import Header from './components/Header';
@@ -13,10 +13,10 @@ const RedirectToHash = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // Nếu không có hash trong URL, redirect đến #/
-    if (!location.hash) {
-      navigate('/');
+  React.useEffect(() => {
+    // Nếu không có hash hoặc hash không bắt đầu bằng '#/', redirect đến '/'
+    if (!location.hash || location.hash === '#') {
+      navigate('/', { replace: true });
     }
   }, [location, navigate]);
 
@@ -35,7 +35,7 @@ function App() {
           <Route path="/provider/:id" element={<ProviderDetail />} />
           <Route path="/compare-providers" element={<CompareProviders />} />
           <Route path="/profit-calculator" element={<ProfitCalculator />} />
-          <Route path="*" element={<Leaderboard />} /> {/* Redirect tất cả các tuyến đường không khớp về Leaderboard */}
+          <Route path="*" element={<Leaderboard />} />
         </Routes>
       </div>
     </Router>

@@ -5,25 +5,25 @@ import './Header.css';
 
 const Header = () => {
   const navigate = useNavigate();
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // State để điều khiển menu
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleCompareClick = () => {
     navigate('/compare-providers');
-    setIsMenuOpen(false); // Đóng menu sau khi chọn
+    setIsMenuOpen(false);
   };
 
   const handleBoardClick = () => {
     navigate('/');
-    setIsMenuOpen(false); // Đóng menu sau khi chọn
+    setIsMenuOpen(false);
   };
 
   const handleCalculatorClick = () => {
     navigate('/profit-calculator');
-    setIsMenuOpen(false); // Đóng menu sau khi chọn
+    setIsMenuOpen(false);
   };
 
   const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen); // Mở/đóng menu
+    setIsMenuOpen(!isMenuOpen);
   };
 
   return (
@@ -33,12 +33,10 @@ const Header = () => {
         <span>SignalTopReview</span>
       </div>
 
-      {/* Nút hamburger cho thiết bị di động */}
       <button className="hamburger" onClick={toggleMenu}>
-        <span className="hamburger-icon">&#9776;</span> {/* Biểu tượng hamburger */}
+        <span className="hamburger-icon">☰</span>
       </button>
 
-      {/* Menu điều hướng */}
       <nav className={`nav ${isMenuOpen ? 'open' : ''}`}>
         <ul>
           <li onClick={handleBoardClick} style={{ cursor: 'pointer' }}>

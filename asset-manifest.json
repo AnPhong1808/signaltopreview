@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/signaltopreview/static/css/main.c87b9432.css",
-    "main.js": "/signaltopreview/static/js/main.7579af74.js",
+    "main.js": "/signaltopreview/static/js/main.561f5cc9.js",
     "static/media/mobile-tadaup.png": "/signaltopreview/static/media/mobile-tadaup.3db629b45c28ef102a61.png",
     "index.html": "/signaltopreview/index.html",
     "main.c87b9432.css.map": "/signaltopreview/static/css/main.c87b9432.css.map",
-    "main.7579af74.js.map": "/signaltopreview/static/js/main.7579af74.js.map"
+    "main.561f5cc9.js.map": "/signaltopreview/static/js/main.561f5cc9.js.map"
   },
   "entrypoints": [
     "static/css/main.c87b9432.css",
-    "static/js/main.7579af74.js"
+    "static/js/main.561f5cc9.js"
   ]
 }

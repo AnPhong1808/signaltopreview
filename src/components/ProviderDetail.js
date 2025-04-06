@@ -113,7 +113,7 @@ const ProviderDetail = () => {
     startDate.setDate(now.getDate() - days);
 
     const filteredSignals = signals.filter(signal => {
-      const signalDate = new Date(signal.opened_at);
+      const signalDate = new Date(signal.openTime);
       return signalDate >= startDate && signalDate <= now;
     });
 
@@ -127,7 +127,7 @@ const ProviderDetail = () => {
 
     const rResultData = dateLabels.map(label => {
       const signalsOnDate = filteredSignals.filter(signal => {
-        const signalDate = new Date(signal.opened_at);
+        const signalDate = new Date(signal.openTime);
         return signalDate.toLocaleDateString() === label;
       });
       const totalRResult = signalsOnDate.reduce((sum, signal) => sum + parseFloat(signal.R_result), 0);

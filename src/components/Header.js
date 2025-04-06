@@ -1,13 +1,29 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom'; // Thêm Link
+import { useNavigate } from 'react-router-dom';
 import logo from '../logo-signaltopreview.jpg';
 import './Header.css';
 
 const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const [isMenuOpen, setIsMenuOpen] = useState(false); // State để điều khiển menu
+
+  const handleCompareClick = () => {
+    navigate('/compare-providers');
+    setIsMenuOpen(false); // Đóng menu sau khi chọn
+  };
+
+  const handleBoardClick = () => {
+    navigate('/');
+    setIsMenuOpen(false); // Đóng menu sau khi chọn
+  };
+
+  const handleCalculatorClick = () => {
+    navigate('/profit-calculator');
+    setIsMenuOpen(false); // Đóng menu sau khi chọn
+  };
 
   const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
+    setIsMenuOpen(!isMenuOpen); // Mở/đóng menu
   };
 
   return (
@@ -17,26 +33,22 @@ const Header = () => {
         <span>SignalTopReview</span>
       </div>
 
+      {/* Nút hamburger cho thiết bị di động */}
       <button className="hamburger" onClick={toggleMenu}>
-        <span className="hamburger-icon">☰</span>
+        <span className="hamburger-icon">&#9776;</span> {/* Biểu tượng hamburger */}
       </button>
 
+      {/* Menu điều hướng */}
       <nav className={`nav ${isMenuOpen ? 'open' : ''}`}>
         <ul>
-          <li>
-            <Link to="/" onClick={() => setIsMenuOpen(false)}>
-              Provider Board
-            </Link>
+          <li onClick={handleBoardClick} style={{ cursor: 'pointer' }}>
+            Provider Board
           </li>
-          <li>
-            <Link to="/compare-providers" onClick={() => setIsMenuOpen(false)}>
-              Compare
-            </Link>
+          <li onClick={handleCompareClick} style={{ cursor: 'pointer' }}>
+            Compare
           </li>
-          <li>
-            <Link to="/profit-calculator" onClick={() => setIsMenuOpen(false)}>
-              Profit Calculator
-            </Link>
+          <li onClick={handleCalculatorClick} style={{ cursor: 'pointer' }}>
+            Profit Calculator
           </li>
           <li>More</li>
         </ul>

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
-import { HashRouter as Router, Routes, Route } from 'react-router-dom'; // Thay BrowserRouter bằng HashRouter
+import { HashRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import Header from './components/Header';
 import Banner from './components/Banner';
 import Leaderboard from './components/Leaderboard';
@@ -8,10 +8,26 @@ import ProviderDetail from './components/ProviderDetail';
 import CompareProviders from './components/CompareProviders';
 import ProfitCalculator from './components/ProfitCalculator';
 
+// Component để xử lý redirect
+const RedirectToHash = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Nếu không có hash trong URL, redirect đến #/
+    if (!location.hash) {
+      navigate('/');
+    }
+  }, [location, navigate]);
+
+  return null;
+};
+
 function App() {
   return (
     <Router>
       <div className="App">
+        <RedirectToHash /> {/* Thêm component này để redirect */}
         <Header />
         <Banner />
         <Routes>
@@ -19,7 +35,8 @@ function App() {
           <Route path="/provider/:id" element={<ProviderDetail />} />
           <Route path="/compare-providers" element={<CompareProviders />} />
           <Route path="/profit-calculator" element={<ProfitCalculator />} />
-        </Routes>        
+          <Route path="*" element={<Leaderboard />} /> {/* Redirect tất cả các tuyến đường không khớp về Leaderboard */}
+        </Routes>
       </div>
     </Router>
   );

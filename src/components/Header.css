@@ -1,0 +1,113 @@
+/* Header.css */
+
+/* Header chung */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+}
+
+/* Logo */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-image {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+
+.logo span {
+  font-size: 20px; /* Kích thước chữ mặc định */
+  font-weight: bold;
+  color: #333;
+}
+
+/* Menu điều hướng */
+.nav ul {
+  display: flex;
+  gap: 20px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav li {
+  font-size: 16px;
+  color: #333;
+  cursor: pointer;
+}
+
+.nav li:hover {
+  color: #00c4b4;
+}
+
+/* Nút hamburger (ẩn mặc định) */
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #333;
+}
+
+/* Responsive: Khi màn hình nhỏ hơn 768px */
+@media (max-width: 768px) {
+  /* Căn giữa logo */
+  .logo {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  /* Giảm kích thước logo và chữ 20% */
+  .logo-image {
+    width: 48px; /* 60px * 0.8 */
+    height: 48px; /* 60px * 0.8 */
+  }
+
+  .logo span {
+    font-size: 16px; /* 20px * 0.8 */
+  }
+
+  /* Hiển thị nút hamburger */
+  .hamburger {
+    display: block;
+    z-index: 1001;
+  }
+
+  /* Ẩn menu mặc định */
+  .nav {
+    position: absolute;
+    top: 80px;
+    left: 0;
+    width: 100%;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    display: none;
+  }
+
+  /* Hiển thị menu khi mở */
+  .nav.open {
+    display: block;
+  }
+
+  /* Xếp dọc menu */
+  .nav ul {
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .nav li {
+    font-size: 18px;
+    padding: 10px 0;
+  }
+}

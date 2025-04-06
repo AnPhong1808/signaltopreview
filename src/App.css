@@ -1,0 +1,190 @@
+.App {
+  font-family: Arial, sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
+  width: 100%;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: #007bff;
+}
+
+.nav ul {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+}
+
+.nav li {
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.user-options {
+  display: flex;
+  gap: 10px;
+}
+
+/* Banner */
+.banner {
+  position: relative;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: #1a1a1a;
+  color: white;
+  border-radius: 10px;
+  margin-top: 15px;
+  width: 100%;
+  overflow: hidden; /* Ẩn phần thừa của hình */
+  min-height: 250px; /* Đảm bảo đủ không gian */
+}
+
+.banner-content {
+  max-width: 50%;
+  padding: 20px;
+  position: relative;
+  z-index: 2;
+  text-shadow: 
+    -2px 0 #1a1a1a, 
+    2px 0 #1a1a1a, 
+    0 -2px #1a1a1a, 
+    0 2px #1a1a1a, 
+    -2px -2px #1a1a1a, 
+    2px -2px #1a1a1a, 
+    -2px 2px #1a1a1a, 
+    2px 2px #1a1a1a; /* Tạo viền 2px màu đen bao quanh */
+}
+
+.banner-content button {
+  background-color: #00c4b4;
+  border: none;
+  padding: 10px 20px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  text-shadow: none; /* Loại bỏ viền khỏi chữ trong nút */
+}
+
+.banner-content h1 {
+  font-size: 28px;
+  margin: 0;
+}
+
+.banner-content h2 {
+  font-size: 20px;
+  margin: 10px 0;
+}
+
+.banner-content p {
+  font-size: 16px;
+  margin: 10px 0;
+}
+
+.banner-content button {
+  background-color: #00c4b4;
+  border: none;
+  padding: 10px 20px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.banner-image {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  z-index: 1; /* Hình nằm giữa nền và chữ */
+  overflow: hidden; /* Ẩn phần thừa của hình */
+}
+
+.banner-image img {
+  height: 100%; /* Giữ chiều cao bằng banner */
+  width: auto; /* Giữ tỉ lệ gốc của ảnh */
+  min-width: 100%; /* Đảm bảo ảnh không nhỏ hơn chiều ngang banner */
+  object-fit: cover; /* Đảm bảo ảnh không bị co lại */
+  object-position: right; /* Ưu tiên hiển thị phần bên phải */
+  animation: slideIn 2s ease-out forwards;
+}
+
+/* Hiệu ứng animation */
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* Media query cho mobile/màn hình hẹp */
+@media (max-width: 768px) {
+  .banner {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .banner-content {
+    max-width: 100%;
+    text-align: center;
+    padding: 20px;
+  }
+
+  .banner-image {
+    top: auto;
+    bottom: 0;
+    right: 0;
+    height: 50%; /* Chiều cao ảnh trên mobile */
+    width: 100%;
+  }
+
+  .banner-image img {
+    height: 100%;
+    width: auto;
+    min-width: 100%; /* Đảm bảo ảnh không nhỏ hơn chiều ngang banner */
+    object-fit: cover; /* Giữ kích thước và ẩn phần thừa */
+    object-position: right; /* Ưu tiên hiển thị phần bên phải */
+  }
+}
+
+.dubai-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 40px;
+  font-weight: bold;
+  color: white;
+}
+
+.footer {
+  background-color: #000;
+  color: #fff;
+  text-align: center;
+  padding: 1rem;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  font-size: 12px;
+}

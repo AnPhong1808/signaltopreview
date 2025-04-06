@@ -1,0 +1,110 @@
+/* Charts.css */
+
+/* R Result Chart */
+.chart-r-result {
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.chart-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.chart-controls button {
+    padding: 8px 16px;
+    border: none;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    border-radius: 20px;
+}
+
+.chart-controls button.active {
+    background-color: #00c4b4;
+    color: white;
+}
+
+/* Container cho các biểu đồ Monthly Signals và Catalogues */
+.charts-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+/* Container cho từng biểu đồ */
+.chart-item {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box; /* Đảm bảo padding không làm tăng kích thước */
+    width: 100%; /* Đảm bảo chiếm toàn bộ chiều rộng của container cha */
+}
+
+/* Signals List */
+.signals-list-container {
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.signals-list-container table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.signals-list-container th,
+.signals-list-container td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.signals-list-container th {
+    background-color: #f9f9f9;
+    font-weight: bold;
+}
+
+.signals-list-container .positive {
+    color: #28a745;
+}
+
+.signals-list-container .negative {
+    color: #dc3545;
+}
+
+.signals-table-body {
+    display: block;
+    max-height: 240px;
+    overflow-y: auto;
+    width: 100%;
+}
+
+.signals-list-container thead,
+.signals-list-container tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+/* Rating Section */
+.rating-section-container {
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+/* Tab Content */
+.tab-content-container {
+    min-height: 600px;
+    width: 100%;
+}
+
+/* Loading Indicator */
+.loading-indicator {
+    text-align: center;
+    padding: 10px;
+    color: #666;
+    font-size: 14px;
+}

@@ -1,0 +1,345 @@
+/* CompareProviders.css */
+
+/* Compare Providers */
+.cp-compare-providers {
+    padding: 20px;
+}
+
+.cp-compare-header {
+    margin-bottom: 20px;
+}
+
+.cp-provider-info-compare {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.cp-provider-info {
+    display: flex;
+    gap: 15px;
+    align-items: flex-start; /* Đổi từ center thành flex-start để căn chỉnh từ trên xuống */
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    flex: 1;
+    box-sizing: border-box;
+}
+
+.cp-provider-info h2 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.cp-provider-info p {
+    margin: 5px 0;
+    color: #666;
+}
+
+.cp-provider-avatar {
+    width: 100px;
+    height: 100px;
+    min-width: 100px; /* Đảm bảo không bị co lại */
+    min-height: 100px; /* Đảm bảo không bị co lại */
+    background-color: #ff5722;
+    border-radius: 50%;
+    background-size: contain; /* Đổi từ cover sang contain để giữ tỷ lệ hình ảnh */
+    background-position: center;
+    background-repeat: no-repeat; /* Đảm bảo hình ảnh không lặp lại */
+    flex-shrink: 0; /* Ngăn avatar bị co lại */
+}
+
+/* Thêm class cho phần text để giới hạn chiều rộng */
+.cp-provider-text {
+    flex: 1; /* Chiếm toàn bộ không gian còn lại */
+    max-width: 300px; /* Giới hạn chiều rộng tối đa của phần text */
+    word-wrap: break-word; /* Cho phép text xuống dòng nếu quá dài */
+}
+
+.cp-compare-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.cp-tab-btn {
+    padding: 10px 20px;
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: #666;
+    transition: color 0.3s;
+}
+
+.cp-tab-btn:hover {
+    color: #00c4b4;
+}
+
+.cp-tab-btn.active {
+    color: #00c4b4;
+    border-bottom: 2px solid #00c4b4;
+}
+
+.cp-compare-section {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+}
+
+.cp-compare-section > div {
+    flex: 1;
+    min-width: 0;
+}
+
+.cp-compare-section h3 {
+    margin-bottom: 10px;
+    font-size: 18px;
+    color: #333;
+}
+
+/* Compare Form */
+.cp-compare-form {
+    display: flex;
+    gap: 20px;
+    align-items: end;
+    margin-top: 20px;
+}
+
+.cp-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.cp-form-group label {
+    font-size: 14px;
+    color: #333;
+}
+
+.cp-form-group input {
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    font-size: 14px;
+    width: 260px;
+    height: 20px;
+}
+
+.cp-compare-form button {
+    padding: 10px 20px;
+    background-color: #00c4b4;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cp-compare-form button:hover {
+    background-color: #009b8c;
+}
+
+.cp-error-message {
+    color: #dc3545;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+/* Signals Statistics */
+.cp-signals-statistics {
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.cp-signals-statistics h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.cp-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: auto auto;
+    gap: 20px;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    width: 100%;
+}
+
+.cp-stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.cp-stat-item:nth-child(4) {
+    grid-column: 2 / 3;
+    grid-row: 2;
+}
+
+.cp-stat-item:nth-child(5) {
+    grid-column: 4 / 5;
+    grid-row: 2;
+}
+
+.cp-stat-value {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.cp-stat-value.cp-positive {
+    color: #28a745;
+}
+
+.cp-stat-value.cp-negative {
+    color: #dc3545;
+}
+
+.cp-stat-label {
+    font-size: 14px;
+    color: #666;
+}
+
+/* R Result Chart */
+.cp-chart-r-result {
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.cp-chart-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.cp-chart-controls button {
+    padding: 8px 16px;
+    border: none;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    border-radius: 20px;
+}
+
+.cp-chart-controls button.active {
+    background-color: #00c4b4;
+    color: white;
+}
+
+.cp-chart-r-result-container {
+    height: 400px;
+    width: 100%;
+}
+
+/* Chart Item (Monthly Signals và Catalogues) */
+.cp-chart-item {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.cp-chart-item-container {
+    flex: 1;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.cp-chart-wrapper {
+    flex: 1;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+}
+
+.cp-chart-wrapper canvas {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100%;
+}
+
+/* Signals List */
+.cp-signals-list-container {
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.cp-signals-list-container table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.cp-signals-list-container th,
+.cp-signals-list-container td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.cp-signals-list-container th {
+    background-color: #f9f9f9;
+    font-weight: bold;
+}
+
+.cp-signals-list-container .cp-positive {
+    color: #28a745;
+}
+
+.cp-signals-list-container .cp-negative {
+    color: #dc3545;
+}
+
+.cp-signals-table-body {
+    display: block;
+    max-height: 240px;
+    overflow-y: auto;
+    width: 100%;
+}
+
+.cp-signals-list-container thead,
+.cp-signals-list-container tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.cp-signals-list {
+    height: 400px;
+}
+
+/* Rating Section */
+.cp-rating-section-container {
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.cp-rating-section {
+    height: 400px;
+}
+
+/* Tab Content */
+.cp-tab-content-container {
+    min-height: 600px;
+    width: 100%;
+}
+
+/* Loading Indicator */
+.cp-loading-indicator {
+    text-align: center;
+    padding: 10px;
+    color: #666;
+    font-size: 14px;
+}

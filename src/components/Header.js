@@ -6,6 +6,13 @@ import './Header.css';
 const Header = () => {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false); // State để điều khiển menu
+  const location = useLocation();
+
+React.useEffect(() => {
+  if (!location.hash || location.hash === '#') {
+    navigate('/', { replace: true });
+  }
+}, [location, navigate]);
 
   const handleCompareClick = () => {
     navigate('/compare-providers');

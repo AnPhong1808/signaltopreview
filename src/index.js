@@ -4,8 +4,8 @@ import './index.css';
 import App from './App';
 
 // Kiểm tra và redirect nếu không có hash
-if (window.location.hash === '') {
-  window.location.hash = '#/';
+if (window.location.hash === '' || window.location.hash === '#') {
+  window.location.replace(window.location.pathname + window.location.search + '#/');
 }
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

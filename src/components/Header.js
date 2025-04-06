@@ -1,26 +1,10 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom'; // Thêm Link
 import logo from '../logo-signaltopreview.jpg';
 import './Header.css';
 
 const Header = () => {
-  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const handleCompareClick = () => {
-    navigate('/compare-providers');
-    setIsMenuOpen(false);
-  };
-
-  const handleBoardClick = () => {
-    navigate('/');
-    setIsMenuOpen(false);
-  };
-
-  const handleCalculatorClick = () => {
-    navigate('/profit-calculator');
-    setIsMenuOpen(false);
-  };
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -39,14 +23,20 @@ const Header = () => {
 
       <nav className={`nav ${isMenuOpen ? 'open' : ''}`}>
         <ul>
-          <li onClick={handleBoardClick} style={{ cursor: 'pointer' }}>
-            Provider Board
+          <li>
+            <Link to="/" onClick={() => setIsMenuOpen(false)}>
+              Provider Board
+            </Link>
           </li>
-          <li onClick={handleCompareClick} style={{ cursor: 'pointer' }}>
-            Compare
+          <li>
+            <Link to="/compare-providers" onClick={() => setIsMenuOpen(false)}>
+              Compare
+            </Link>
           </li>
-          <li onClick={handleCalculatorClick} style={{ cursor: 'pointer' }}>
-            Profit Calculator
+          <li>
+            <Link to="/profit-calculator" onClick={() => setIsMenuOpen(false)}>
+              Profit Calculator
+            </Link>
           </li>
           <li>More</li>
         </ul>

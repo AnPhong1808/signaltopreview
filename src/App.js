@@ -1,5 +1,5 @@
 import React from 'react';
-import { HashRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Banner from './components/Banner';
 import Leaderboard from './components/Leaderboard';
@@ -9,16 +9,6 @@ import ProfitCalculator from './components/ProfitCalculator';
 import './App.css';
 
 function App() {
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  React.useEffect(() => {
-    // Nếu không có hash hoặc hash chỉ là '#', redirect đến '/'
-    if (!location.hash || location.hash === '#') {
-      navigate('/', { replace: true });
-    }
-  }, [location, navigate]);
-
   return (
     <div className="App">
       <Header />

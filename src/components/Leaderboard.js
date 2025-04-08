@@ -12,7 +12,7 @@ const Leaderboard = () => {
   // Hàm gọi API
   const fetchProviders = async (pageNumber) => {
     try {
-      const response = await fetch(`https://admin.tducoin.com/api/provider?page=${pageNumber}`, {
+      const response = await fetch(`https://admin.tducoin.com/api/provider?page=${pageNumber}&per_page=20`, {
         method: 'GET',
         headers: {
           'x-api-key': 'oqKbBxKcEn9l4IXE4EqS2sgNzXPFvE',
@@ -63,8 +63,8 @@ const Leaderboard = () => {
       let valueB = b[sortKey];
 
       if (sortKey === 'R_result') {
-        valueA = parseFloat(valueA.replace(/[^0-9.-]+/g, '')) || 0;
-        valueB = parseFloat(valueB.replace(/[^0-9.-]+/g, '')) || 0;
+        valueA = parseFloat(valueA?.replace(/[^0-9.-]+/g, '')) || 0;
+        valueB = parseFloat(valueB?.replace(/[^0-9.-]+/g, '')) || 0;
       } else if (sortKey === 'created_at') {
         // Sắp xếp theo thời gian tạo (mới nhất trước)
         valueA = new Date(valueA).getTime() || 0;
@@ -131,8 +131,8 @@ const Leaderboard = () => {
           <ul>
             {top5RResult.map((provider, index) => (
               <li key={index} className="top-stats-item">
-                <span className="provider-rank-name">{index + 1}. {provider.name}</span>
-                <span className="provider-value">{provider.R_result}</span>
+                <span className="provider-rank-name">{index + 1}. {provider.name ?? 'N/A'}</span>
+                <span className="provider-value">{provider.R_result ?? 'N/A'}</span>
               </li>
             ))}
           </ul>
@@ -144,8 +144,8 @@ const Leaderboard = () => {
           <ul>
             {top5Drawdown.map((provider, index) => (
               <li key={index} className="top-stats-item">
-                <span className="provider-rank-name">{index + 1}. {provider.name}</span>
-                <span className="provider-value">{provider.drawdown}%</span>
+                <span className="provider-rank-name">{index + 1}. {provider.name ?? 'N/A'}</span>
+                <span className="provider-value">{provider.drawdown ? `${provider.drawdown}%` : 'N/A'}</span>
               </li>
             ))}
           </ul>
@@ -157,8 +157,10 @@ const Leaderboard = () => {
           <ul>
             {top5Newest.map((provider, index) => (
               <li key={index} className="top-stats-item">
-                <span className="provider-rank-name">{index + 1}. {provider.name}</span>
-                <span className="provider-value">Created: {new Date(provider.created_at).toLocaleDateString()}</span>
+                <span className="provider-rank-name">{index + 1}. {provider.name ?? 'N/A'}</span>
+                <span className="provider-value">
+                  Created: {provider.created_at ? new Date(provider.created_at).toLocaleDateString() : 'N/A'}
+                </span>
               </li>
             ))}
           </ul>
@@ -203,15 +205,15 @@ const Leaderboard = () => {
                 <span className="rank">{index + 1}</span>
                 <div className="avatar" style={{ backgroundImage: item.avatar ? `url(${item.avatar})` : 'none' }}></div>
                 <div className="provider-info">
-                  <span className="provider-name">{item.name}</span>
-                  <span className="flag">{item.nation}</span>
+                  <span className="provider-name">{item.name ?? 'N/A'}</span>
+                  <span className="flag">{item.nation ?? 'N/A'}</span>
                 </div>
               </td>
-              <td className="r-result">{item.R_result}</td>
-              <td>{item.drawdown ? `${item.drawdown}%` : ''}</td>
-              <td>{item.wpr ? `${item.wpr}%` : ''}</td>
-              <td>{item.trades}</td>
-              <td>{item.source}</td>
+              <td className="r-result">{item.R_result ?? 'N/A'}</td>
+              <td>{item.drawdown ? `${item.drawdown}%` : 'N/A'}</td>
+              <td>{item.wpr ? `${item.wpr}%` : 'N/A'}</td>
+              <td>{item.trades ?? 'N/A'}</td>
+              <td>{item.source ?? 'N/A'}</td>
             </tr>
           ))}
         </tbody>

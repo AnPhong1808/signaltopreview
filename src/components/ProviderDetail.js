@@ -138,7 +138,7 @@ const ProviderDetail = () => {
       labels: dateLabels,
       datasets: [
         {
-          label: 'R Result (%)',
+          label: 'R Result',
           data: rResultData,
           borderColor: '#00c4b4',
           backgroundColor: 'rgba(0, 196, 180, 0.2)',
@@ -170,7 +170,7 @@ const ProviderDetail = () => {
       y: {
         title: {
           display: true,
-          text: 'R Result (%)',
+          text: 'R Result',
         },
         beginAtZero: true,
       },
@@ -236,17 +236,33 @@ const ProviderDetail = () => {
     },
   };
 
-  const getCataloguesData = () => {
-    const cataloguesStats = pagination.catalogues_stats || {};
-    const labels = Object.keys(cataloguesStats);
-    const data = Object.values(cataloguesStats);
+  const getSymbolsData = () => {
+    const symbolsStats = pagination.symbols || {};
+    const totalSignals = Object.values(symbolsStats).reduce((sum, value) => sum + value, 0);
+    
+    // Tính tỉ lệ phần trăm và lọc symbols >= 10%
+    const symbolsWithPercentage = Object.entries(symbolsStats).map(([symbol, count]) => ({
+      symbol,
+      count,
+      percentage: totalSignals > 0 ? (count / totalSignals) * 100 : 0,
+    }));
+
+    const significantSymbols = symbolsWithPercentage.filter(item => item.percentage >= 10);
+    const othersSymbols = symbolsWithPercentage.filter(item => item.percentage < 10);
+
+    // Gộp các symbols dưới 10% thành "Others"
+    const othersCount = othersSymbols.reduce((sum, item) => sum + item.count, 0);
+    const othersPercentage = totalSignals > 0 ? (othersCount / totalSignals) * 100 : 0;
+
+    const labels = [...significantSymbols.map(item => item.symbol), ...(othersCount > 0 ? ['Others'] : [])];
+    const data = [...significantSymbols.map(item => item.count), ...(othersCount > 0 ? [othersCount] : [])];
 
     return {
-      labels: labels.length > 0 ? labels : ['No Data'], // Đảm bảo có ít nhất 1 nhãn nếu không có dữ liệu
+      labels: labels.length > 0 ? labels : ['No Data'],
       datasets: [
         {
-          label: 'Catalogues',
-          data: data.length > 0 ? data : [1], // Đảm bảo có dữ liệu mặc định nếu rỗng
+          label: 'Symbols',
+          data: data.length > 0 ? data : [1],
           backgroundColor: [
             '#2196f3',
             '#ff9800',
@@ -254,7 +270,7 @@ const ProviderDetail = () => {
             '#f44336',
             '#9c27b0',
             '#ffeb3b',
-            '#795548',
+            '#795548', // Màu cho "Others"
           ],
           borderColor: '#fff',
           borderWidth: 1,
@@ -263,7 +279,7 @@ const ProviderDetail = () => {
     };
   };
 
-  const cataloguesChartOptions = {
+  const symbolsChartOptions = {
     responsive: true,
     plugins: {
       legend: {
@@ -276,9 +292,20 @@ const ProviderDetail = () => {
       },
       title: {
         display: true,
-        text: `Symbols (${new Date().toLocaleString('default', { month: 'short', year: 'numeric' })})`,
+        text: `Symbols Distribution (${new Date().toLocaleString('default', { month: 'short', year: 'numeric' })})`,
         font: {
           size: 18,
+        },
+      },
+      tooltip: {
+        callbacks: {
+          label: function (context) {
+            const label = context.label || '';
+            const value = context.raw || 0;
+            const total = context.dataset.data.reduce((sum, val) => sum + val, 0);
+            const percentage = total > 0 ? ((value / total) * 100).toFixed(2) : 0;
+            return `${label}: ${value} (${percentage}%)`;
+          },
         },
       },
     },
@@ -313,7 +340,7 @@ const ProviderDetail = () => {
         <div className="provider-info">
           <h1>{providerData.name}</h1>
           <p>ID {id}</p>
-          <p>{providerData.description}</p>
+          <div dangerouslySetInnerHTML={{ __html: providerData.description }} />
           <div className="provider-actions">
             <button
               className={`follow-btn ${activeTab === 'trading' ? 'active' : ''}`}
@@ -334,6 +361,7 @@ const ProviderDetail = () => {
       <div className="tab-content">
         {activeTab === 'trading' && (
           <TradingAccount
+            total_r={pagination.total_r}
             stats={stats}
             timeRange={timeRange}
             setTimeRange={setTimeRange}
@@ -341,8 +369,8 @@ const ProviderDetail = () => {
             chartOptions={chartOptions}
             getMonthlySignalsData={getMonthlySignalsData}
             monthlyChartOptions={monthlyChartOptions}
-            getCataloguesData={getCataloguesData}
-            cataloguesChartOptions={cataloguesChartOptions}
+            getCataloguesData={getSymbolsData} // Sử dụng getSymbolsData
+            cataloguesChartOptions={symbolsChartOptions} // Sử dụng symbolsChartOptions
             signals={signals}
             tableBodyRef={tableBodyRef}
             pagination={pagination}

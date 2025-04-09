@@ -3,6 +3,7 @@ import { Line, Bar, Pie } from 'react-chartjs-2';
 
 const TradingAccount = ({
   stats,
+  total_r,
   timeRange,
   setTimeRange,
   getChartData,
@@ -65,8 +66,8 @@ const TradingAccount = ({
             <span className="stat-label">Win Rate</span>
           </div>
           <div className="stat-item">
-            <span className={`stat-value ${parseFloat(stats.totalRResult) >= 0 ? 'positive' : 'negative'}`}>
-              {stats.totalRResult}%
+          <span className={`stat-value ${parseFloat(total_r) >= 0 ? 'positive' : 'negative'}`}>
+              {parseFloat(total_r).toFixed(2)}
             </span>
             <span className="stat-label">Total R Result</span>
           </div>
@@ -122,8 +123,8 @@ const TradingAccount = ({
               <th>Symbol</th>
               <th>Type</th>
               <th>R Result</th>
-              <th>Opened At</th>
-              <th>Closed At</th>
+              <th>Opened Time</th>
+              <th>Closed Time</th>
             </tr>
           </thead>
           <tbody ref={tableBodyRef} className="signals-table-body">
@@ -131,9 +132,9 @@ const TradingAccount = ({
               <tr key={index}>
                 <td>{signal.symbol}</td>
                 <td>{signal.isBuy ? 'Buy' : 'Sell'}</td>
-                <td className={parseFloat(signal.R_result) >= 0 ? 'positive' : 'negative'}>{signal.R_result}%</td>
-                <td>{new Date(signal.opened_at).toLocaleString()}</td>
-                <td>{new Date(signal.closed_at).toLocaleString()}</td>
+                <td className={parseFloat(signal.R_result) >= 0 ? 'positive' : 'negative'}>{signal.R_result}</td>
+                <td>{new Date(signal.openTime).toLocaleString()}</td>
+                <td>{new Date(signal.closeTime).toLocaleString()}</td>
               </tr>
             ))}
           </tbody>

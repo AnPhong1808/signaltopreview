@@ -167,25 +167,35 @@ const Leaderboard = () => {
         </div>
       </div>
 
-      <div className="tabs">
-        <button
-          className={sortBy === 'R_result' ? 'active' : ''}
-          onClick={() => handleTabClick('R_result')}
-        >
-          R RESULT
-        </button>
-        <button
-          className={sortBy === 'drawdown' ? 'active' : ''}
-          onClick={() => handleTabClick('drawdown')}
-        >
-          MAX. DRAWDOWN
-        </button>
-        <button
-          className={sortBy === 'wpr' ? 'active' : ''}
-          onClick={() => handleTabClick('wpr')}
-        >
-          WPR
-        </button>
+      <div className="tabs-and-search">
+        <div className="tabs">
+          <button
+            className={sortBy === 'R_result' ? 'active' : ''}
+            onClick={() => handleTabClick('R_result')}
+          >
+            R RESULT
+          </button>
+          <button
+            className={sortBy === 'drawdown' ? 'active' : ''}
+            onClick={() => handleTabClick('drawdown')}
+          >
+            MAX. DRAWDOWN
+          </button>
+          <button
+            className={sortBy === 'wpr' ? 'active' : ''}
+            onClick={() => handleTabClick('wpr')}
+          >
+            WPR
+          </button>
+        </div>
+        <div className="search-container">
+          <input
+            type="text"
+            placeholder="Search..."
+            className="search-input"
+          />
+          <span className="search-icon">🔍</span>
+        </div>
       </div>
       <table>
         <thead>

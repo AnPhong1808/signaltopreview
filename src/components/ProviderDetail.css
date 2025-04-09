@@ -94,7 +94,7 @@
 .provider-header {
     display: flex;
     gap: 20px;
-    align-items: center;
+    align-items: flex-start; /* Đổi từ center sang flex-start để tránh biến dạng khi nội dung dài */
     margin-bottom: 20px;
 }
 
@@ -103,6 +103,13 @@
     height: 100px;
     background-color: #ff5722; /* Màu cam làm placeholder */
     border-radius: 50%;
+    flex-shrink: 0; /* Ngăn avatar bị co lại */
+    background-size: cover; /* Đảm bảo ảnh nền phủ kín */
+    background-position: center; /* Căn giữa ảnh nền */
+}
+
+.provider-info {
+    flex: 1; /* Chiếm toàn bộ không gian còn lại */
 }
 
 .provider-info h1 {
@@ -113,6 +120,36 @@
 .provider-info p {
     margin: 5px 0;
     color: #666;
+    word-wrap: break-word; /* Đảm bảo văn bản dài tự xuống dòng */
+}
+
+/* Định dạng các thẻ HTML trong description */
+.provider-info p {
+    margin: 5px 0;
+    color: #666;
+    line-height: 1.5; /* Tăng khoảng cách dòng cho dễ đọc */
+}
+
+.provider-info a {
+    color: #00c4b4; /* Màu xanh giống giao diện */
+    text-decoration: none;
+}
+
+.provider-info a:hover {
+    text-decoration: underline;
+}
+
+.provider-info b {
+    font-weight: bold;
+}
+
+.provider-info u {
+    text-decoration: underline;
+}
+
+.provider-info br {
+    display: block;
+    margin: 5px 0; /* Tạo khoảng cách cho thẻ <br> */
 }
 
 .provider-actions {

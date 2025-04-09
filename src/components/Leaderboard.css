@@ -7,7 +7,6 @@
 .tabs {
   display: flex;
   gap: 10px;
-  margin-bottom: 20px;
 }
 
 .tabs button {
@@ -16,6 +15,10 @@
   background-color: #f0f0f0;
   cursor: pointer;
   border-radius: 20px;
+  height: 40px; /* Đặt chiều cao cố định để đồng bộ với ô tìm kiếm */
+  line-height: 20px; /* Căn giữa chữ theo chiều dọc */
+  box-sizing: border-box; /* Đảm bảo padding nằm trong kích thước */
+  font-size: 16px; /* Đồng bộ kích thước chữ với ô tìm kiếm */
 }
 
 .tabs button.active {
@@ -62,8 +65,11 @@ th {
 .avatar {
   width: 40px;
   height: 40px;
-  background-color: #00c4b4; /* Màu xanh làm placeholder */
+  background-color: #00c4b4;
   border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .provider-info {
@@ -151,4 +157,47 @@ th {
 
 .top-stats-box .provider-value {
   text-align: right; /* Căn phải giá trị */
+}
+
+/* Container để căn chỉnh tabs và search trên cùng một dòng */
+.tabs-and-search {
+  display: flex;
+  justify-content: space-between; /* Đẩy tabs sang trái, search sang phải */
+  align-items: center; /* Căn giữa theo chiều dọc */
+  margin: 20px 0; /* Khoảng cách trên dưới đồng đều với load-more */
+}
+
+/* Container cho ô tìm kiếm */
+.search-container {
+  position: relative; /* Để căn chỉnh icon kính lúp bên trong input */
+  display: flex;
+  align-items: center;
+}
+
+/* Định kiểu cho ô input tìm kiếm */
+.search-input {
+  padding: 9px 30px 9px 10px; /* Padding phải đủ chỗ cho icon, trên/dưới 9px để tổng = 40px */
+  border: 2px solid #000; /* Viền đen */
+  border-radius: 20px; /* Bo góc 20px */
+  font-size: 16px;
+  outline: none; /* Bỏ viền mặc định khi focus */
+  height: 40px; /* Nội dung 20px + padding 18px + border 4px = 40px */
+  line-height: 20px; /* Căn giữa chữ theo chiều dọc */
+  box-sizing: border-box; /* Đảm bảo padding và border nằm trong kích thước */
+  width: 200px; /* Chiều rộng cố định để không gian nhập liệu thoải mái */
+}
+
+/* Placeholder mờ */
+.search-input::placeholder {
+  color: #aaa; /* Màu xám nhạt cho placeholder */
+  opacity: 1; /* Đảm bảo độ mờ hiển thị đúng */
+}
+
+/* Icon kính lúp */
+.search-icon {
+  position: absolute;
+  right: 10px; /* Đặt icon cách lề phải 10px */
+  font-size: 16px; /* Kích thước icon */
+  pointer-events: none; /* Ngăn icon bị click */
+  line-height: 20px; /* Căn giữa icon theo chiều dọc */
 }

@@ -10,6 +10,7 @@ const Leaderboard = () => {
   const [sortBy, setSortBy] = useState('R_result');
   const [searchQuery, setSearchQuery] = useState('');
   const [searchMessage, setSearchMessage] = useState('');
+  const [isSearching, setIsSearching] = useState(false); // Trạng thái để kiểm soát nút Load More/Back
   const navigate = useNavigate();
 
   const fetchProviders = async (pageNumber) => {
@@ -37,26 +38,49 @@ const Leaderboard = () => {
   };
 
   const searchProvider = async (query) => {
-    try {
-      const response = await fetch(`https://admin.tducoin.com/api/provider/search?search_string=${encodeURIComponent(query)}`, {
-        method: 'GET',
-        headers: {
-          'x-api-key': 'oqKbBxKcEn9l4IXE4EqS2sgNzXPFvE',
-          'Content-Type': 'application/json',
-        },
-      });
-      const result = await response.json();
-      console.log('Search result:', result); // Log để debug
-      if (result.success) {
-        setData([result.data]);
-        setSearchMessage('');
-      } else {
-        setData([]);
-        setSearchMessage('Provider not found');
+    // Kiểm tra trong sessionStorage trước
+    const storedData = JSON.parse(sessionStorage.getItem('leaderboardData') || '[]');
+    const foundProvider = storedData.find(
+      (provider) => provider.name?.toLowerCase() === query.toLowerCase() || provider.id === query
+    );
+
+    if (foundProvider) {
+      setData([foundProvider]);
+      setSearchMessage('');
+      setIsSearching(true);
+    } else {
+      // Nếu không tìm thấy trong sessionStorage, gọi API
+      try {
+        const response = await fetch(`https://admin.tducoin.com/api/provider/search?search_string=${encodeURIComponent(query)}`, {
+          method: 'GET',
+          headers: {
+            'x-api-key': 'oqKbBxKcEn9l4IXE4EqS2sgNzXPFvE',
+            'Content-Type': 'application/json',
+          },
+        });
+        const result = await response.json();
+        console.log('Search result:', result);
+        if (result.success) {
+          setData([result.data]);
+          setSearchMessage('');
+          setIsSearching(true);
+
+          // Bổ sung provider mới vào sessionStorage nếu chưa có
+          const updatedData = [...storedData, result.data].filter(
+            (provider, index, self) => self.findIndex((p) => p.id === provider.id) === index // Loại bỏ trùng lặp
+          );
+          sessionStorage.setItem('leaderboardData', JSON.stringify(updatedData));
+          setOriginalData(updatedData); // Cập nhật originalData
+        } else {
+          setData([]);
+          setSearchMessage('Provider not found');
+          setIsSearching(true);
+        }
+      } catch (error) {
+        console.error('Error searching provider:', error);
+        setSearchMessage('Error occurred while searching');
+        setIsSearching(true);
       }
-    } catch (error) {
-      console.error('Error searching provider:', error);
-      setSearchMessage('Error occurred while searching');
     }
   };
 
@@ -146,6 +170,7 @@ const Leaderboard = () => {
     if (!value) {
       setData(originalData);
       setSearchMessage('');
+      setIsSearching(false);
     }
   };
 
@@ -155,11 +180,17 @@ const Leaderboard = () => {
     }
   };
 
-  // Xử lý nhấn Enter trong ô input
   const handleSearchKeyPress = (e) => {
     if (e.key === 'Enter' && searchQuery) {
       searchProvider(searchQuery);
     }
+  };
+
+  const handleBack = () => {
+    setData(originalData);
+    setSearchQuery('');
+    setSearchMessage('');
+    setIsSearching(false);
   };
 
   return (
@@ -232,7 +263,7 @@ const Leaderboard = () => {
             className="search-input"
             value={searchQuery}
             onChange={handleSearchChange}
-            onKeyPress={handleSearchKeyPress} // Thêm sự kiện Enter
+            onKeyPress={handleSearchKeyPress}
           />
           <span className="search-icon" onClick={handleSearchSubmit}>🔍</span>
         </div>
@@ -275,11 +306,13 @@ const Leaderboard = () => {
           ))}
         </tbody>
       </table>
-      {page < pagination.last_page && !searchQuery && (
-        <div className="load-more">
-          <button onClick={handleLoadMore}>Load More</button>
-        </div>
-      )}
+      <div className="load-more">
+        {isSearching ? (
+          <button onClick={handleBack}>Back</button>
+        ) : (
+          page < pagination.last_page && <button onClick={handleLoadMore}>Load More</button>
+        )}
+      </div>
     </div>
   );
 };

@@ -1,25 +1,67 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2'; // Import Bar chart từ react-chartjs-2
+import axios from 'axios'; // Import axios để gọi API
 
-const Rating = () => {
-  // Dữ liệu giả lập cho biểu đồ điểm qua 6 tháng gần nhất
+const Rating = ({ providerId }) => { // providerId là prop bắt buộc, không có mặc định
+  const [ratingData, setRatingData] = useState(null);
+
+  // Hàm gọi API với cấu hình từ curl
+  const fetchRatingData = async (id) => {
+    try {
+      const response = await axios.get(`https://admin.tducoin.com/api/provider/rating/${id}`, {
+        headers: {
+          'x-api-key': 'oqKbBxKcEn9l4IXE4EqS2sgNzXPFvE',
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = response.data.data; // Giả sử API trả về mảng trong 'data'
+      sessionStorage.setItem(`rating_${id}`, JSON.stringify(data)); // Lưu riêng theo provider_id
+      setRatingData(data);
+    } catch (error) {
+      console.error('Error fetching rating data:', error);
+    }
+  };
+
+  // Kiểm tra sessionStorage khi component mount hoặc providerId thay đổi
+  useEffect(() => {
+    if (!providerId) {
+      console.error('providerId is required');
+      return;
+    }
+    const storedData = sessionStorage.getItem(`rating_${providerId}`);
+    if (storedData) {
+      setRatingData(JSON.parse(storedData));
+    } else {
+      fetchRatingData(providerId);
+    }
+  }, [providerId]); // Thêm providerId vào dependency array để gọi lại khi thay đổi
+
+  // Dữ liệu cho biểu đồ dựa trên API
   const getRatingChartData = () => {
-    const labels = [
-      'Oct 2024',
-      'Nov 2024',
-      'Dec 2024',
-      'Jan 2025',
-      'Feb 2025',
-      'Mar 2025',
-    ]; // 6 tháng gần nhất tính đến tháng 3/2025
-    const data = [92.5, 93.0, 91.8, 92.3, 93.5, 93.07]; // Điểm giả lập
+    if (!ratingData || ratingData.length === 0) {
+      return {
+        labels: [],
+        datasets: [
+          {
+            label: 'Rating Score',
+            data: [],
+            backgroundColor: '#00c4b4',
+            borderColor: '#00c4b4',
+            borderWidth: 1,
+          },
+        ],
+      };
+    }
+
+    const labels = ratingData.map((item) => item.month); // Lấy danh sách tháng từ API
+    const scores = ratingData.map((item) => item.total_score); // Lấy total_score làm điểm số
 
     return {
       labels,
       datasets: [
         {
           label: 'Rating Score',
-          data,
+          data: scores,
           backgroundColor: '#00c4b4',
           borderColor: '#00c4b4',
           borderWidth: 1,
@@ -30,13 +72,13 @@ const Rating = () => {
 
   const chartOptions = {
     responsive: true,
-    maintainAspectRatio: false, // Tắt tỷ lệ mặc định để điều chỉnh chiều cao tự do
+    maintainAspectRatio: false,
     plugins: {
       legend: {
-        display: false, // Ẩn legend
+        display: false,
       },
       title: {
-        display: false, // Bỏ tiêu đề
+        display: false,
       },
     },
     scales: {
@@ -52,74 +94,84 @@ const Rating = () => {
           text: 'Score',
         },
         beginAtZero: false,
-        min: 90, // Đặt giá trị tối thiểu để biểu đồ dễ nhìn
-        max: 100, // Đặt giá trị tối đa
+        min: -50, // Điều chỉnh để phù hợp với giá trị âm từ API nếu có
+        max: 100,
       },
     },
   };
 
-  // Dữ liệu cho các hạng mục và thanh trạng thái
-  const metrics = [
-    { label: 'Account P/L', value: 49.99, max: 50 },
-    { label: 'Order control', value: 9.3, max: 10 },
-    { label: 'Instrument data', value: 4.06, max: 5 },
-    { label: 'Position data', value: 20.0, max: 20 },
-    { label: 'Trading style', value: 10.39, max: 15 },
-  ];
+  // Dữ liệu cho các hạng mục và thanh trạng thái từ API
+  const getMetrics = () => {
+    if (!ratingData || ratingData.length === 0) {
+      return [];
+    }
+    const latestMonth = ratingData[ratingData.length - 1]; // Lấy tháng gần nhất
+    return [
+      { label: 'Performance Score', value: latestMonth.performance_score, max: 50 },
+      { label: 'Community Score', value: latestMonth.community_score, max: 20 },
+      { label: 'Longterm Score', value: latestMonth.longterm_score, max: 30 },
+    ];
+  };
 
-  // Dữ liệu cho các mục trong Account P/L Details
-  const accountDetails = [
-    {
-      label: 'Account P/L',
-      score: 49.99,
-      maxScore: 50,
-      status: 'Excellent',
-      metrics: [
-        { label: 'Return', value: '1000000.00%' },
-        { label: 'MDD', value: '0.16%' },
-        { label: 'Return-to-risk Ratio', value: '100.00' },
-      ],
-      description:
-        'Average monthly balance of account +2500000.00%. The monthly profitability is 100.00%. Profitability is extremely strong. The income is very stable. And the maximum drawdown is 0.16%. The return-to-risk ratio is 100.00. The trading risk is very low. The return-to-risk ratio is very high.',
-    },
-    {
-      label: 'Order control',
-      score: 9.93,
-      maxScore: 10,
-      status: 'Excellent',
-      metrics: [
-        { label: 'Total number of orders', value: '4797 orders' },
-        { label: 'Trading frequency', value: '46.6 orders/day' },
-        { label: 'TP/SL ratio', value: '97.54%' },
-      ],
-      description:
-        'Cumulative trading for 103 days, 4797 orders. Average 46.6 orders per day. The trading frequency is relatively high. Reducing the trading frequency appropriately will help to better control risks. The take-profit and stop-loss are set for 97.54% orders. Clear trading goals and good trading habits.',
-    },
-    {
-      label: 'Instruments & position',
-      score: 24.06,
-      maxScore: 25,
-      status: 'Excellent',
-      metrics: [
-        { label: 'Big position ratio', value: '0.02%' },
-        { label: 'Instruments', value: '1 items' },
-        { label: 'P/L ratio', value: '18.75' },
-      ],
-      description:
-        'Have good awareness of position risk control, and the overall position control is relatively reasonable. Among 4797 orders, big positions account for 0.02%. It is recommended to bring a stop profit and stop loss for all heavyweight orders, abandon the gambling mentality, and do a good job in risk control. The focused instrument is USDMK.Best at USDMK. Its accounts for 99.72% of the total profit. Keep working hard.',
-    },
-  ];
+  // Dữ liệu cho Account P/L Details từ API
+  const getAccountDetails = () => {
+    if (!ratingData || ratingData.length === 0) {
+      return [];
+    }
+    const latestMonth = ratingData[ratingData.length - 1]; // Lấy tháng gần nhất
+    return [
+      {
+        label: 'Performance Score',
+        score: latestMonth.performance_score,
+        maxScore: 50,
+        status: latestMonth.status,
+        metrics: [
+          { label: 'Consistency', value: 'N/A' }, // Thay bằng dữ liệu thực nếu có
+          { label: 'Duration', value: 'N/A' },
+          { label: 'Stability', value: 'N/A' },
+        ],
+        description: 'Performance evaluation based on trading signals.',
+      },
+      {
+        label: 'Community Score',
+        score: latestMonth.community_score,
+        maxScore: 20,
+        status: latestMonth.status,
+        metrics: [
+          { label: 'Followers', value: 'N/A' },
+          { label: 'Transparency', value: 'N/A' },
+          { label: 'Interaction', value: 'N/A' },
+        ],
+        description: 'Community trust evaluation.',
+      },
+      {
+        label: 'Longterm Score',
+        score: latestMonth.longterm_score,
+        maxScore: 30,
+        status: latestMonth.status,
+        metrics: [
+          { label: 'Consistency Months', value: 'N/A' },
+          { label: 'Stability', value: 'N/A' },
+          { label: 'Degradation', value: 'N/A' },
+        ],
+        description: 'Long-term trust evaluation.',
+      },
+    ];
+  };
+
+  // Lấy Rating Score và Status từ tháng gần nhất
+  const latestRating = ratingData && ratingData.length > 0 ? ratingData[ratingData.length - 1] : null;
 
   return (
     <div className="rating-section">
-      {/* Thêm phần Rating Summary phía trên, canh lề phải */}
+      {/* Rating Summary */}
       <div className="rating-summary">
         <div className="rating-grade">
-          <span className="grade-text">A+</span>
+          <span className="grade-text">{latestRating?.status === 'Qualified' ? 'A+' : 'B'}</span>
         </div>
         <div className="rating-details">
           <span className="rating-label">Rating Score</span>
-          <span className="rating-value">93.07</span>
+          <span className="rating-value">{latestRating ? latestRating.total_score : 'N/A'}</span>
         </div>
       </div>
 
@@ -130,7 +182,7 @@ const Rating = () => {
           </div>
         </div>
         <div className="rating-metrics">
-          {metrics.map((metric, index) => (
+          {getMetrics().map((metric, index) => (
             <div className="metric-item" key={index}>
               <div className="metric-header">
                 <span className="metric-label">{metric.label}</span>
@@ -149,11 +201,17 @@ const Rating = () => {
         </div>
       </div>
       <div className="account-pl">
-        {accountDetails.map((detail, index) => (
+        {getAccountDetails().map((detail, index) => (
           <div className="account-detail-wrapper" key={index}>
             <div className="account-detail-header">
               <h3>{detail.label}</h3>
-              <span className="status-label">{detail.status}</span>
+              <span
+                className={`status-label ${
+                  detail.status === 'Disqualified' ? 'disqualified' : 'qualified'
+                }`}
+              >
+                {detail.status}
+              </span>
             </div>
             <div className="account-detail-item">
               <div className="account-detail-content">
@@ -179,6 +237,22 @@ const Rating = () => {
           </div>
         ))}
       </div>
+
+      {/* CSS nội tuyến */}
+      <style jsx>{`
+        .status-label {
+          padding: 4px 8px;
+          border-radius: 8px;
+        }
+        .qualified {
+          background-color:rgb(2, 150, 27); /* Màu mặc định (xanh) */
+          color: white;
+        }
+        .disqualified {
+          background-color: red; /* Màu đỏ cho Disqualified */
+          color: white;
+        }
+      `}</style>
     </div>
   );
 };

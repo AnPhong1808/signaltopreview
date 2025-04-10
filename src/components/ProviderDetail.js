@@ -379,7 +379,10 @@ const ProviderDetail = () => {
           />
         )}
 
-        {activeTab === 'rating' && <Rating />}
+        {activeTab === 'rating' && 
+        <Rating 
+          providerId={id}
+        />}
       </div>
     </div>
   );

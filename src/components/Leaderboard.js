@@ -4,12 +4,14 @@ import './Leaderboard.css';
 
 const Leaderboard = () => {
   const [data, setData] = useState([]);
+  const [originalData, setOriginalData] = useState([]);
   const [page, setPage] = useState(1);
   const [pagination, setPagination] = useState({});
-  const [sortBy, setSortBy] = useState('R_result'); // Mặc định sắp xếp theo R_result
+  const [sortBy, setSortBy] = useState('R_result');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchMessage, setSearchMessage] = useState('');
   const navigate = useNavigate();
 
-  // Hàm gọi API
   const fetchProviders = async (pageNumber) => {
     try {
       const response = await fetch(`https://admin.tducoin.com/api/provider?page=${pageNumber}&per_page=20`, {
@@ -23,6 +25,7 @@ const Leaderboard = () => {
       if (result.success) {
         const newData = pageNumber === 1 ? result.data : [...data, ...result.data];
         setData(newData);
+        setOriginalData(newData);
         setPagination(result.pagination || {});
         sessionStorage.setItem('leaderboardData', JSON.stringify(newData));
         sessionStorage.setItem('leaderboardPagination', JSON.stringify(result.pagination || {}));
@@ -33,22 +36,46 @@ const Leaderboard = () => {
     }
   };
 
-  // Kiểm tra dữ liệu trong SessionStorage khi component mount
+  const searchProvider = async (query) => {
+    try {
+      const response = await fetch(`https://admin.tducoin.com/api/provider/search?search_string=${encodeURIComponent(query)}`, {
+        method: 'GET',
+        headers: {
+          'x-api-key': 'oqKbBxKcEn9l4IXE4EqS2sgNzXPFvE',
+          'Content-Type': 'application/json',
+        },
+      });
+      const result = await response.json();
+      console.log('Search result:', result); // Log để debug
+      if (result.success) {
+        setData([result.data]);
+        setSearchMessage('');
+      } else {
+        setData([]);
+        setSearchMessage('Provider not found');
+      }
+    } catch (error) {
+      console.error('Error searching provider:', error);
+      setSearchMessage('Error occurred while searching');
+    }
+  };
+
   useEffect(() => {
     const storedData = sessionStorage.getItem('leaderboardData');
     const storedPagination = sessionStorage.getItem('leaderboardPagination');
     const storedPage = sessionStorage.getItem('leaderboardPage');
 
     if (storedData && storedPagination && storedPage) {
-      setData(JSON.parse(storedData));
+      const parsedData = JSON.parse(storedData);
+      setData(parsedData);
+      setOriginalData(parsedData);
       setPagination(JSON.parse(storedPagination));
       setPage(parseInt(storedPage, 10));
     } else {
       fetchProviders(page);
     }
-  }, []); // Chỉ chạy khi component mount
+  }, []);
 
-  // Gọi API khi page thay đổi
   useEffect(() => {
     const storedData = sessionStorage.getItem('leaderboardData');
     if (!storedData || page > parseInt(sessionStorage.getItem('leaderboardPage') || '0', 10)) {
@@ -56,7 +83,6 @@ const Leaderboard = () => {
     }
   }, [page]);
 
-  // Hàm xử lý sắp xếp dữ liệu
   const sortData = (dataToSort, sortKey) => {
     return [...dataToSort].sort((a, b) => {
       let valueA = a[sortKey];
@@ -66,7 +92,6 @@ const Leaderboard = () => {
         valueA = parseFloat(valueA?.replace(/[^0-9.-]+/g, '')) || 0;
         valueB = parseFloat(valueB?.replace(/[^0-9.-]+/g, '')) || 0;
       } else if (sortKey === 'created_at') {
-        // Sắp xếp theo thời gian tạo (mới nhất trước)
         valueA = new Date(valueA).getTime() || 0;
         valueB = new Date(valueB).getTime() || 0;
       } else {
@@ -74,43 +99,37 @@ const Leaderboard = () => {
         valueB = parseFloat(valueB) || 0;
       }
 
-      return sortKey === 'created_at' ? valueB - valueA : valueB - valueA; // Giảm dần
+      return sortKey === 'created_at' ? valueB - valueA : valueB - valueA;
     });
   };
 
-  // Sắp xếp dữ liệu khi sortBy thay đổi
   useEffect(() => {
-    if (data.length > 0) {
+    if (data.length > 0 && !searchQuery) {
       const sortedData = sortData(data, sortBy);
       setData(sortedData);
       sessionStorage.setItem('leaderboardData', JSON.stringify(sortedData));
     }
   }, [sortBy]);
 
-  // Hàm lấy Top 5 theo từng tiêu chí
   const getTop5ByCriteria = (criteria) => {
-    const sorted = sortData(data, criteria);
-    return sorted.slice(0, 5); // Lấy 5 phần tử đầu tiên
+    const sorted = sortData(originalData, criteria);
+    return sorted.slice(0, 5);
   };
 
-  // Lấy Top 5 theo R_result, drawdown và created_at
   const top5RResult = getTop5ByCriteria('R_result');
   const top5Drawdown = getTop5ByCriteria('drawdown');
   const top5Newest = getTop5ByCriteria('created_at');
 
-  // Xử lý khi nhấn nút "Load More"
   const handleLoadMore = () => {
     if (page < pagination.last_page) {
       setPage(page + 1);
     }
   };
 
-  // Xử lý khi nhấn vào tab
   const handleTabClick = (tab) => {
     setSortBy(tab);
   };
 
-  // Xử lý khi nhấn vào provider
   const handleProviderClick = (provider) => {
     navigate(`/provider/${provider.id}`, {
       state: {
@@ -121,11 +140,31 @@ const Leaderboard = () => {
     });
   };
 
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    if (!value) {
+      setData(originalData);
+      setSearchMessage('');
+    }
+  };
+
+  const handleSearchSubmit = () => {
+    if (searchQuery) {
+      searchProvider(searchQuery);
+    }
+  };
+
+  // Xử lý nhấn Enter trong ô input
+  const handleSearchKeyPress = (e) => {
+    if (e.key === 'Enter' && searchQuery) {
+      searchProvider(searchQuery);
+    }
+  };
+
   return (
     <div className="leaderboard">
-      {/* Đưa 3 khung Top 5 lên trên phần tabs và bảng chính */}
       <div className="top-stats-container">
-        {/* Top 5 R Result */}
         <div className="top-stats-box">
           <h3>Top 5 Highest R Result</h3>
           <ul>
@@ -138,7 +177,6 @@ const Leaderboard = () => {
           </ul>
         </div>
 
-        {/* Top 5 Max Drawdown */}
         <div className="top-stats-box">
           <h3>Top 5 Highest Max Drawdown</h3>
           <ul>
@@ -151,7 +189,6 @@ const Leaderboard = () => {
           </ul>
         </div>
 
-        {/* Top 5 Providers mới nhất */}
         <div className="top-stats-box">
           <h3>Top 5 Newest Providers</h3>
           <ul>
@@ -193,10 +230,20 @@ const Leaderboard = () => {
             type="text"
             placeholder="Search..."
             className="search-input"
+            value={searchQuery}
+            onChange={handleSearchChange}
+            onKeyPress={handleSearchKeyPress} // Thêm sự kiện Enter
           />
-          <span className="search-icon">🔍</span>
+          <span className="search-icon" onClick={handleSearchSubmit}>🔍</span>
         </div>
       </div>
+
+      {searchMessage && (
+        <div className="search-message" style={{ textAlign: 'center', color: 'red', margin: '10px 0' }}>
+          {searchMessage}
+        </div>
+      )}
+
       <table>
         <thead>
           <tr>
@@ -228,7 +275,7 @@ const Leaderboard = () => {
           ))}
         </tbody>
       </table>
-      {page < pagination.last_page && (
+      {page < pagination.last_page && !searchQuery && (
         <div className="load-more">
           <button onClick={handleLoadMore}>Load More</button>
         </div>

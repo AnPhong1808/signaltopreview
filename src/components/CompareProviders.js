@@ -498,7 +498,6 @@ const CompareProviders = () => {
               <div>
                 <h2>{provider1.name}</h2>
                 <p>ID {provider1.id}</p>
-                <p>{provider1.description}</p>
               </div>
             </div>
             <div className="cp-provider-info">
@@ -506,7 +505,6 @@ const CompareProviders = () => {
               <div>
                 <h2>{provider2.name}</h2>
                 <p>ID {provider2.id}</p>
-                <p>{provider2.description}</p>
               </div>
             </div>
           </div>

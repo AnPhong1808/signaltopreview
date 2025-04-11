@@ -149,38 +149,31 @@
   background-color: #009b8c;
 }
 
-/* Bảng kết quả */
-.pc-results-table {
+/* Biểu đồ kết quả */
+.pc-results-chart {
   margin-top: 30px;
   background-color: #f9f9f9;
   padding: 20px;
   border-radius: 8px;
 }
 
-.pc-results-table h2 {
+.pc-results-chart h2 {
   margin-bottom: 15px;
   text-align: center;
+  color: #333;
 }
 
-.pc-results-table table {
+.pc-chart-wrapper {
   width: 100%;
-  border-collapse: collapse;
+  height: 400px;
 }
 
-.pc-results-table th,
-.pc-results-table td {
-  padding: 10px;
+/* Thông báo lỗi */
+.pc-error-message {
+  color: #dc3545;
+  font-size: 14px;
+  margin-top: 10px;
   text-align: center;
-  border-bottom: 1px solid #ddd;
-}
-
-.pc-results-table th {
-  background-color: #e0e0e0;
-  font-weight: bold;
-}
-
-.pc-results-table tbody tr:hover {
-  background-color: #f1f1f1;
 }
 
 /* Responsive: Khi màn hình nhỏ hơn 900px, xếp dọc các bảng */
@@ -192,6 +185,10 @@
 
   .pc-options-box {
     width: 100%; /* Đảm bảo bảng chiếm toàn bộ chiều rộng */
+  }
+
+  .pc-chart-wrapper {
+    height: 300px; /* Giảm chiều cao biểu đồ trên màn hình nhỏ */
   }
 }
 
@@ -219,5 +216,13 @@
 
   .pc-options-box ul li {
     font-size: 12px; /* Giảm kích thước chữ trong Guideline */
+  }
+
+  .pc-chart-wrapper {
+    height: 250px; /* Giảm chiều cao biểu đồ trên màn hình nhỏ hơn */
+  }
+
+  .pc-results-chart h2 {
+    font-size: 1.2em; /* Giảm kích thước tiêu đề biểu đồ */
   }
 }

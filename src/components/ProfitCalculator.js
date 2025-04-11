@@ -1,14 +1,36 @@
 import React, { useState } from 'react';
+import { Line } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
 import './ProfitCalculator.css';
+
+// Đăng ký các thành phần của Chart.js
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const ProfitCalculator = () => {
   const [capital, setCapital] = useState('');
   const [providerId, setProviderId] = useState('');
   const [timeRange, setTimeRange] = useState('');
   const [strategy, setStrategy] = useState('');
-  const [moveSLToEntry, setMoveSLToEntry] = useState(false); // Đổi tên từ command1 thành moveSLToEntry
   const [showResults, setShowResults] = useState(false);
-  const [results, setResults] = useState(null);
+  const [profitData, setProfitData] = useState([]);
+  const [error, setError] = useState('');
 
   const strategies = [
     'Fixed Lot',
@@ -22,24 +44,101 @@ const ProfitCalculator = () => {
     'Custom Strategy',
   ];
 
+  // Hàm gọi API để lấy dữ liệu lợi nhuận
+  const fetchProfitData = async () => {
+    try {
+      // Chuyển đổi timeRange thành định dạng API mong muốn (1month, 3months, 6months)
+      const periodMap = {
+        '1m': '1month',
+        '3m': '3months',
+        '6m': '6months',
+      };
+      const period = periodMap[timeRange];
+
+      // Chuyển đổi strategy thành index (0-8) để khớp với API
+      const strategyIndex = strategies.indexOf(strategy).toString();
+
+      const response = await fetch(
+        `https://admin.tducoin.com/api/provider/${providerId}/profit?period=${period}&capital=${capital}&strategy=${strategyIndex}`,
+        {
+          method: 'GET',
+          headers: {
+            'x-api-key': 'oqKbBxKcEn9l4IXE4EqS2sgNzXPFvE',
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      const result = await response.json();
+      if (result.status === 'success') {
+        setProfitData(result.data);
+        setShowResults(true);
+        setError('');
+      } else {
+        throw new Error(result.message || 'Failed to fetch profit data');
+      }
+    } catch (error) {
+      setError(error.message);
+      setShowResults(false);
+      setProfitData([]);
+    }
+  };
+
   const handleConfirm = () => {
     if (!capital || !providerId || !timeRange || !strategy) {
       alert('Please fill in all required fields.');
       return;
     }
 
-    const calculatedProfit = {
-      initialCapital: parseFloat(capital),
-      providerId,
-      timeRange,
-      strategy,
-      moveSLToEntry, // Đổi tên từ command1
-      estimatedProfit: parseFloat(capital) * 0.1,
-      profitPercentage: 10,
-    };
+    fetchProfitData();
+  };
 
-    setResults(calculatedProfit);
-    setShowResults(true);
+  // Tạo dữ liệu cho biểu đồ
+  const getProfitChartData = () => {
+    const labels = profitData.map(item => item.date);
+    const data = profitData.map(item => item.income_amount);
+
+    return {
+      labels,
+      datasets: [
+        {
+          label: 'Profit (USD)',
+          data,
+          borderColor: '#00c4b4',
+          backgroundColor: 'rgba(0, 196, 180, 0.2)',
+          fill: true,
+          tension: 0.3,
+        },
+      ],
+    };
+  };
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: 'Profit Over Time',
+      },
+    },
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: 'Date',
+        },
+      },
+      y: {
+        title: {
+          display: true,
+          text: 'Profit (USD)',
+        },
+        beginAtZero: true,
+      },
+    },
   };
 
   return (
@@ -113,12 +212,11 @@ const ProfitCalculator = () => {
               <label>
                 <input
                   type="checkbox"
-                  checked={moveSLToEntry}
-                  onChange={(e) => setMoveSLToEntry(e.target.checked)}
+                  checked={true} // Luôn được chọn
+                  disabled // Không cho phép thay đổi
                 />
                 Move SL to Entry
               </label>
-              {/* Bỏ Command 2 */}
             </div>
           </div>
         </div>
@@ -142,34 +240,16 @@ const ProfitCalculator = () => {
         <button onClick={handleConfirm}>Confirm</button>
       </div>
 
-      {/* Bảng thống kê lợi nhuận */}
-      {showResults && results && (
-        <div className="pc-results-table">
-          <h2>Profit Statistics</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>Initial Capital</th>
-                <th>Provider ID</th>
-                <th>Time Range</th>
-                <th>Strategy</th>
-                <th>Move SL to Entry</th> {/* Đổi tên cột */}
-                <th>Estimated Profit</th>
-                <th>Profit Percentage</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>${results.initialCapital.toFixed(2)}</td>
-                <td>{results.providerId}</td>
-                <td>{results.timeRange}</td>
-                <td>{results.strategy}</td>
-                <td>{results.moveSLToEntry ? 'Yes' : 'No'}</td>
-                <td>${results.estimatedProfit.toFixed(2)}</td>
-                <td>{results.profitPercentage}%</td>
-              </tr>
-            </tbody>
-          </table>
+      {/* Hiển thị lỗi nếu có */}
+      {error && <div className="pc-error-message">{error}</div>}
+
+      {/* Biểu đồ lợi nhuận thay vì bảng */}
+      {showResults && profitData.length > 0 && (
+        <div className="pc-results-chart">
+          <h2>Profit Chart</h2>
+          <div className="pc-chart-wrapper">
+            <Line data={getProfitChartData()} options={chartOptions} />
+          </div>
         </div>
       )}
     </div>

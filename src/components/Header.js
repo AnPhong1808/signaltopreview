@@ -50,7 +50,7 @@ const Header = () => {
           <li onClick={handleCalculatorClick} style={{ cursor: 'pointer' }}>
             Profit Calculator
           </li>
-          <li>More</li>
+          <li>Use Policy</li>
         </ul>
       </nav>
     </header>

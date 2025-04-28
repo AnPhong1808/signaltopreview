@@ -9,6 +9,7 @@ import ProfitCalculator from './components/ProfitCalculator';
 import './App.css';
 
 function App() {
+  console.log('App component rendered');
   return (
     <div className="App">
       <Header />
